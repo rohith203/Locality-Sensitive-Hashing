@@ -27,13 +27,13 @@ print("\n*** Plagiarism detection using LSH ***\n")
 timer_start = time.time()   # start timer
 folderpath = "corpus"       # path to corpus
 extension=".txt"            # specified extensions to read. Set to None to ignore extension
-shingle_size = 8            # size of shingle: 8-12 is reommended
+shingle_size = 8            # size of shingle: 8-12 is recommended
 shingle_matrix = shingling.get_shingle_matrix(folderpath, 8, extension)
 print(f"Time taken for shingling: {time.time()-timer_start}")
 
 # step 2: min-hashing
 start_time = time.time()    # start timer
-no_of_hash_functions = 200  # specify no of hash functions for signature matrix
+no_of_hash_functions = 5  # specify no of hash functions for signature matrix
 signature_matrix = minhashing.generate_signature_matrix(shingle_matrix, no_of_hash_functions)
 print(f"Time taken for minhashing: {time.time()-timer_start}")
 
