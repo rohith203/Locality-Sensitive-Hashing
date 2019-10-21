@@ -146,6 +146,7 @@ def recall(threshold, x, size, output, incidence_matrix, sim_type):
         recall value for the given set of retrieved items.
     """
     docs = compute_similarity(x, [ i for i in range(size) ], incidence_matrix, sim_type)
+    # print(docs)
     req = [ i for f, i in output if i>=threshold ]
     den = [ i for f, i in docs if i>=threshold and f!=x ]
     if len(den) == 0:
