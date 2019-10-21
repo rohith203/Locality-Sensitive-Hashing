@@ -49,7 +49,7 @@ def startLSH():
     # preprocessing done. ask file from user to check plagiarism
     sim_type = "jaccard"
     while True:
-        test_file = int(input("Enter path of file: "))
+        test_file = int(input("\nEnter path of file: "))
         threshold = float(input("Enter threshold: "))
         if test_file == "EXIT":
             break;
@@ -57,11 +57,13 @@ def startLSH():
         #     print(">> The given path does not exist.")
         #     continue
         print(f"Given file: {statistics.get_file_name(test_file, files)}")
+        start_time = time.time()
         similar_docs = lsh.find_similar_docs(test_file, buckets_list, signature_matrix, r)
         output = statistics.compute_similarity(test_file, similar_docs, shingle_matrix, sim_type)
 
         for file_id, score in output:
             print(f"{statistics.get_file_name(file_id, files)}\t{score}")
+        print(f"retrieved in {time.time()-start_time} s")
         
         print(f"Precision: {statistics.precision(threshold, output)}")
         print(f"Recall: {statistics.recall(threshold, test_file, len(files), output, shingle_matrix, sim_type)}")

@@ -3,82 +3,82 @@ includes functions (metrics) required to evaluate Locality Sensitive Hashing.
 """
 import numpy as np
 
-def jaccard(x, a, signature_matrix):
+def jaccard(x, a, incidence_matrix):
     """This function finds jaccard similarity between two documents
 
     Parameters
     ----------
     x: int
-        1-d signature array of document with docid=x
+        document id.
     a: int
-        1-d signature array of document with docid=a
-    signature_matrix: pandas DataFrame
-        contains signature vectors of all documents as columns
+        document id.
+    incidence_matrix: pandas DataFrame
+        contains incidence vectors of all documents as columns
     
     Returns
     -------
     int
         jaccard similarity between documents x and a
     """
-    x = signature_matrix[x]
-    a = signature_matrix[a]
+    x = incidence_matrix[x]
+    a = incidence_matrix[a]
     return sum(x & a)/sum(x | a)
 
 
-def euclid(x, a, signature_matrix):
+def euclid(x, a, incidence_matrix):
     """This function finds euclidean similarity between two documents
 
     Parameters
     ----------
     x: int
-        1-d signature array of document with docid=x
+        document id.
     a: int
-        1-d signature array of document with docid=a
-    signature_matrix: pandas DataFrame
-        contains signature vectors of all documents as columns
+        document id.
+    incidence_matrix: pandas DataFrame
+        contains incidence vectors of all documents as columns
     
     Returns
     -------
     int
         euclidean distance between documents x and a
     """
-    x = signature_matrix[x]
-    a = signature_matrix[a]
+    x = incidence_matrix[x]
+    a = incidence_matrix[a]
     return np.sum(a**2 - x**2)**0.5
 
-def cosine(x, a, signature_matrix):
+def cosine(x, a, incidence_matrix):
     """This function finds cosine similarity between two documents
 
     Parameters
     ----------
     x: int
-        1-d signature array of document with docid=x
+        document id.
     a: int
-        1-d signature array of document with docid=a
-    signature_matrix: pandas DataFrame
-        contains signature vectors of all documents as columns
+        document id.
+    incidence_matrix: pandas DataFrame
+        contains incidence vectors of all documents as columns
     
     Returns
     -------
     int
         cosine similarity between documents x and a
     """
-    x = signature_matrix[x]
-    a = signature_matrix[a]
+    x = incidence_matrix[x]
+    a = incidence_matrix[a]
     return np.dot(a,x)/(np.sum(a**2) * np.sum(x**2))**0.5
 
 
-def compute_similarity(x, similar_docs, signature_matrix, sim_type="jaccard"):
+def compute_similarity(x, similar_docs, incidence_matrix, sim_type="jaccard"):
     """This function finds cosine similarity between two documents
 
     Parameters
     ----------
     x: int
-        1-d signature array of document with docid=x
+        document id.
     similar_docs: list
         a list of docids which are similar to x.
-    signature_matrix: pandas DataFrame
-        contains signature vectors of all documents as columns
+    incidence_matrix: pandas DataFrame
+        contains incidence vectors of all documents as columns
     sim_type: string
         can take values jaccard, euclid, cosine. 
 
@@ -94,7 +94,7 @@ def compute_similarity(x, similar_docs, signature_matrix, sim_type="jaccard"):
     ranked_list = []
     for i in similar_docs:
         if i == x: continue
-        score = sim_fun(x, i, signature_matrix)
+        score = sim_fun(x, i, incidence_matrix)
         ranked_list.append((i, score))
     
     if sim_type == "euclid":
@@ -122,7 +122,7 @@ def precision(threshold, output):
     return len(req)/len(output)
 
 
-def recall(threshold, x, size, output, signature_matrix, sim_type):
+def recall(threshold, x, size, output, incidence_matrix, sim_type):
     """This function finds cosine similarity between two documents
 
     Parameters
@@ -130,13 +130,13 @@ def recall(threshold, x, size, output, signature_matrix, sim_type):
     threshold: float
         value of similarity above which retrieved docs are considered relevant
     x: int
-        1-d signature array of document with docid=x
+        document id.
     size: int
         number of all documents in the corpus
     output: list
         a list of retrieved items.
-    signature_matrix: pandas DataFrame
-        contains signature vectors of all documents as columns
+    incidence_matrix: pandas DataFrame
+        contains incidence vectors of all documents as columns
     sim_type: string
         can take values jaccard, euclid, cosine. 
 
@@ -145,7 +145,7 @@ def recall(threshold, x, size, output, signature_matrix, sim_type):
     float
         recall value for the given set of retrieved items.
     """
-    docs = compute_similarity(x, [ i for i in range(size) ], signature_matrix, sim_type)
+    docs = compute_similarity(x, [ i for i in range(size) ], incidence_matrix, sim_type)
     req = [ i for f, i in output if i>=threshold ]
     den = [ i for f, i in docs if i>=threshold and f!=x ]
     if len(den) == 0:
